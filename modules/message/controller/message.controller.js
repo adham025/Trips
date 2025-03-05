@@ -13,6 +13,32 @@ export const allowfieldMessages = [
   "isRead",
 ];
 
+const defultFields =  [
+  "conversationId",
+  "createdAt",
+  "updatedAt",
+  "sender",
+  "content",
+  "type",
+  "isdelivered",
+  "isRead",
+  "sender.name",
+  "sender._id",
+  "sender.email",
+  "sender.phone",
+  "sender.lastSeen",
+]
+export const allowUserFields = [
+  "_id",
+  "name",
+  "email",
+  "phone",
+  "role",
+  "image",
+  "lastSeen",
+  "Trips",
+];
+
 export const getHistory = async (req, res, next) => {
   try {
     const { conversationId } = req.query;
@@ -151,6 +177,7 @@ export const getMessages = async (req, res, next) => {
   const { conversationId } = req.query;
   const { sort, search, select, page, size } = req.query;
   const userId = req.user._id;
+  console.log({userId , conversationId });
 
   const conversation = await conversationModel.findById(conversationId);
 
@@ -167,7 +194,7 @@ export const getMessages = async (req, res, next) => {
   const pipeline = new ApiPipeline()
     .matchId({
       Id: conversationId,
-      field: "_id",
+      field: "conversationId",
     })
     .match({
       fields: ["content"],
@@ -176,15 +203,31 @@ export const getMessages = async (req, res, next) => {
     })
     .sort(sort)
     .lookUp({
-      from: "user",
+      from: "users",
       localField: "sender",
       foreignField: "_id",
       as: "sender",
     })
+        .addStage({
+          $project: {
+            _id: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            content:1,
+            isRead:1,
+            isdelivered:1,
+            type:1,
+            sender: allowUserFields.reduce((acc, field) => {
+                acc[field] = { $arrayElemAt: [`$sender.${field}`, 0] };
+                return acc;
+              }, {}),
+          },
+        })
     .paginate(page, size)
     .projection({
       allowFields: allowfieldMessages,
       select,
+      defultFields:defultFields,
     })
     .build();
 
