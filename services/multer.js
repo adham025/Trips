@@ -15,7 +15,7 @@ export const HME = (err, req, res, next) => {
 
 export function myMulter(customValidation = fileValidation.image) {
 
-    const storage = multer.diskStorage({})
+    const storage = multer.memoryStorage()
 
     function fileFilter(req, file, cb) {
         if (customValidation.includes(file.mimetype)) {
@@ -26,4 +26,4 @@ export function myMulter(customValidation = fileValidation.image) {
     }
     const upload = multer({ fileFilter, storage })
     return upload
-}
+}   

@@ -54,13 +54,13 @@ const tripSchema = new Schema(
     },
     categoryId: {
       type: Types.ObjectId,
-      ref: "Category",
+      ref: "category",
       required: [true, 'CategoryId is required']
   },
     reviews: [
       {
         type: Types.ObjectId,
-        ref: "Review",
+        ref: "review",
       },
     ],
   },
@@ -69,6 +69,6 @@ const tripSchema = new Schema(
   }
 );
 
-const tripModel = model("Trip", tripSchema);
+const tripModel = model("trip", tripSchema);
 
 export default tripModel;

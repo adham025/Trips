@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const messageSchema = new Schema(
   {
-    conversationId: { type: Schema.Types.ObjectId, ref: "Conversation" },
+    conversationId: { type: Schema.Types.ObjectId, ref: "conversation" },
     sender: { type: Schema.Types.ObjectId, ref: "user", required: true },
     content: { type: String, required: true },
     type: { type: String, default: "text" },
@@ -12,6 +12,6 @@ const messageSchema = new Schema(
   { timestamps: { createdAt: "createdAt" } }
 );
 
-const messageModel = mongoose.model("Message", messageSchema);
+const messageModel = mongoose.model("message", messageSchema);
 
 export default messageModel;
