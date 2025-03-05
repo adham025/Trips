@@ -9,7 +9,7 @@ const reviewSchema = new Schema(
     },
     trip: {
       type: Types.ObjectId,
-      ref: "Trip",
+      ref: "trip",
       required: true,
     },
     rating: {
@@ -29,6 +29,6 @@ const reviewSchema = new Schema(
 
 reviewSchema.index({ user: 1, trip: 1 }, { unique: true });
 
-const reviewModel = model("Review", reviewSchema);
+const reviewModel = model("review", reviewSchema);
 
 export default reviewModel;

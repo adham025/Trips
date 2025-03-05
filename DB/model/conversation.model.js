@@ -16,6 +16,6 @@ conversationSchema.index({ participants: 1 });
 conversationSchema.index({ "lastMessage.sender": 1 });
 conversationSchema.index({ "lastMessage.createdAt": 1 });
 
-const conversationModel = mongoose.model("Conversation", conversationSchema);
+const conversationModel = mongoose.model("conversation", conversationSchema);
 
 export default conversationModel;

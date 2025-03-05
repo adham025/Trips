@@ -1,5 +1,7 @@
 import userModel from "../../DB/model/user.model.js";
 import bcryptjs from "bcryptjs";
+import cloudinary from '../../services/cloudinary.js'
+import { uploadFromBuffer } from "../../services/uploadImage.js";
 export const changePassword = async (req,res)=>{
     try{
         const {currentPassword , newPassword} = req.body;
@@ -33,4 +35,23 @@ export const deleteAccount = async(req,res)=>{
     catch(err){
         res.status(400).json({"status":"Failed" , error: err});
     }
+}
+
+
+export const addProfileImage =  async(req, res, next )=>{
+    const file = req.file
+    const user  =  req.user;
+    
+    if (!file) {
+        return next(new Error("Please upload ur image"))
+    }
+ 
+ const folder = `users/${user._id}/${user.name}.png`
+
+    const response = await uploadFromBuffer(req.file.buffer , folder)
+    console.log(response);
+    const updateUser =  await userModel.findByIdAndUpdate({_id:user._id}, {
+    $set: {image : response.secure_url}
+})
+return res.status(200).json({messgae:"image uploaded success", success:true , user : updateUser})
 }

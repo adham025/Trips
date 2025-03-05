@@ -12,7 +12,7 @@ const categorySchema = new Schema({
     },
     createdBy: {
         type: Types.ObjectId,
-        ref: "User",
+        ref: "user",
         required: [true, 'Created by is required'],
 
     },
@@ -22,5 +22,5 @@ const categorySchema = new Schema({
 })
 
 
-const categoryModel = model('Category', categorySchema)
+const categoryModel = model('category', categorySchema)
 export default categoryModel
