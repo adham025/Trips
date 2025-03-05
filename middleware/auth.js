@@ -4,8 +4,8 @@ import userModel from "../DB/model/user.model.js";
 import { asyncHandler } from "../services/asyncHandler.js";
 import redis from "../DB/redis.js";
 export const roles = {
-  Admin: "Admin",
-  User: "User",
+  Admin: "admin",
+  User: "user",
 };
 
 export const auth = (

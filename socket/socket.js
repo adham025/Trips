@@ -1,8 +1,8 @@
 import { Server as SocketIOServer } from "socket.io";
 import messageModel from "../DB/model/message.model.js";
 import conversationModel from "../DB/model/conversation.model.js";
-// import { handleToken } from "../services/hadleToken.js";
-// import redis from "../DB/redis.js";
+import { handleToken } from "../services/hadleToken.js";
+import redis from "../DB/redis.js";
 
 const isSocketConnected = (io, socketId) => {
   const socket = io.sockets.sockets.get(socketId);
@@ -17,7 +17,7 @@ export const initSocket = (server) => {
     transports: ["websocket", "polling"],
     path: "/socket.io/",
   });
-
+  
   io.on("connection", async (socket) => {
     console.log("User connected:", socket.id);
 
@@ -26,6 +26,8 @@ export const initSocket = (server) => {
     });
 
     socket.on("send_message", async (data) => {
+      console.log({data});
+      
       await handleSendMessage(io, socket, data);
     });
 
@@ -148,14 +150,15 @@ const handleSendMessage = async (io, socket, data) => {
     }
 
     if (receiverSocketId && isSocketConnected(io, receiverSocketId)) {
-      io.to(receiverSocketId).emit("receive_message", newMessage);
       newMessage.isdelivered = true;
-      await messageModel.findByIdAndUpdate(
+      const messageReturned = await messageModel.findByIdAndUpdate(
         { _id: newMessage._id },
         {
           $set: { isdelivered: true },
         }
-      );
+      ).populate("sender", "name email image")
+      io.to(receiverSocketId).emit("receive_message", messageReturned);
+
     }
   } catch (error) {
     socket.emit("error", { message: error.message });

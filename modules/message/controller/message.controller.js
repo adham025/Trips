@@ -77,8 +77,8 @@ export const lastconversations = async (req, res, next) => {
       })
       .sort({ createdAt: -1 })
       .limit(10)
-      .populate("sender", "userName email")
-      .populate("receiver", "userName email")
+      .populate("sender", "name email")
+      .populate("receiver", "name email")
       .lean();
 
     const conversationMap = new Map();
