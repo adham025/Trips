@@ -38,6 +38,8 @@ const tripSchema = new Schema(
         message: "Return date must be after the departure date.",
       },
     },
+    images: [String],
+    publicImageIds: [String],
     price: {
       type: Number,
       required: true,
@@ -55,8 +57,8 @@ const tripSchema = new Schema(
     categoryId: {
       type: Types.ObjectId,
       ref: "Category",
-      required: [true, 'CategoryId is required']
-  },
+      required: [true, "CategoryId is required"],
+    },
     reviews: [
       {
         type: Types.ObjectId,
