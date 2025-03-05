@@ -28,7 +28,7 @@ export const auth = (
         if (!user) {
           user = await userModel
             .findById(decoded.id)
-            .select("email userName role");
+            .select("email name role phone");
           const userKey = `user-${user._id}`;
           await redis.set(userKey, JSON.stringify(user));
           await redis.expire(userKey, 900);

@@ -4,12 +4,12 @@ const bookingSchema = new Schema(
   {
     userId: {
       type: Types.ObjectId,
-      ref: "User",
+      ref: "user",
       required: true,
     },
     tripId: {
       type: Types.ObjectId,
-      ref: "Trip",
+      ref: "trip",
       required: true,
     },
     numberOfPeople: { type: Number, required: true },
@@ -28,6 +28,6 @@ const bookingSchema = new Schema(
   { timestamps: true }
 );
 
-const bookingModel = model("Booking", bookingSchema);
+const bookingModel = model("booking", bookingSchema);
 
 export default bookingModel;

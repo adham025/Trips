@@ -16,6 +16,7 @@ export const allowConversationSortFields = [
   "participants.role",
   "participants.image",
   "participants.lastSeen",
+  "participants._id"
 ];
 
 export const allowConversationFields = [
@@ -36,13 +37,16 @@ export const createconversation = async (req, res, next) => {
   const participants = [senderId, receiverId];
   let conversation = await conversationModel.findOne({
     participants: { $all: participants, $size: participants.length },
-  });
+  }).populate("participants","_id name image role email");
 
   if (!conversation) {
     conversation = await conversationModel.create({
       participants: [senderId, receiverId],
     });
+
+    conversation = await conversationModel.findById(conversation._id).populate("participants","_id name image role email")
   }
+
 
   return res
     .status(201)

@@ -23,8 +23,8 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      default: "User",
-      enum: ["User", "Admin"],
+      default: "user",
+      enum: ["user", "admin"],
     },
     confirmEmail: {
       type: Boolean,
@@ -35,7 +35,7 @@ const userSchema = new Schema(
     wishlist: [
       {
         type: Types.ObjectId,
-        ref: "Trip",
+        ref: "trip",
       },
     ],
     code: {
@@ -47,5 +47,5 @@ const userSchema = new Schema(
   }
 );
 
-const userModel = model("User", userSchema);
+const userModel = model("user", userSchema);
 export default userModel;
