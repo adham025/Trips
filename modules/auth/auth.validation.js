@@ -7,7 +7,7 @@ export const signUpValidation = {
       name: Joi.string().min(3).max(30).required(),
       email: Joi.string().email(),
       password: Joi.string()
-        .regex(/^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$/)
+        .regex(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=/{}|?]).{8,}$/)
         .messages({
           "string.pattern.base":
             "Password must contain at least one letter, one number, and one special character (!@#$%^&*).",
@@ -39,12 +39,12 @@ export const changePassValidation = (req, res, next) => {
       }),
     newPassword: Joi.string()
       .pattern(
-        new RegExp("^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=/{}|?]).{6,}$")
+        new RegExp("^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=/{}|?]).{8,}$")
       )
       .required()
       .messages({
         "string.pattern.base":
-          "new password must include at least one uppercase, one digit, one special character and min length is 6",
+          "new password must include at least one uppercase, one digit, one special character and min length is 8",
         "string.empty": "Password is required",
       }),
   });
