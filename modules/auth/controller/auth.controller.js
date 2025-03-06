@@ -87,7 +87,7 @@ export const confirmEmail = async (req, res, next) => {
           path.join(__dirname, "./emailTemplates/email-success.html")
         );
       } else {
-        return res.redirect("https://www.google.com/");
+        return res.redirect("http://localhost:5173/login");
       }
     }
   } catch (error) {
