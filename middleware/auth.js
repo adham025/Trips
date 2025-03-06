@@ -39,7 +39,7 @@ export const auth = (
         } else {
           if (acceptRoles.includes(user.role)) {
             req.user = user;
-            req.userId = user.id;
+            req.userId = user._id;
             req.user._id = user._id;
             next();
           } else {

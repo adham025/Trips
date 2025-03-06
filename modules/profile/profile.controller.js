@@ -7,8 +7,10 @@ export const changePassword = async (req,res)=>{
         const {currentPassword , newPassword} = req.body;
         const {userId} = req;
         const {password} = await userModel.findById(userId);
-        console.log(password);
+        
         const decode = bcryptjs.compareSync(currentPassword , password);
+        console.log(decode);
+        
         if(!decode){
             return res.status(400).json({status: "Failed" , error: "password is wrong"});
         }
@@ -19,10 +21,41 @@ export const changePassword = async (req,res)=>{
         res.status(200).json({status:"success" , data: "password is updated successfully"});
     }
     catch(err){
-        res.status(400).json({status: "Failed" , error: err})
+        res.status(400).json({status: "Failed" , error: err.message})
     }
 }
 
+export const accountController = async (req,res)=>{
+    try {
+        const {userId} = req;
+        const {username , phone} = req.body;
+
+        const updateUser = await userModel.findByIdAndUpdate(userId , {
+            name: username,
+            phone
+        } , {new: true});
+
+        if(!updateUser){
+            return res.status(400).json({status: "Failed" , error: "Something went wrong server"});
+        }
+        res.status(200).json({status: "data is updated successfully" , data: updateUser});
+    } catch (error) {
+        res.status(400).json({status: "Failed" , error: error});
+    }
+}
+export const getUserDataInAccount = async (req,res)=>{
+    try {
+        const {userId} = req;
+        const user = await userModel.findById(userId).select("name phone email");
+
+        if(!user){
+            return res.status(400).json({status: "Failed" , error: "Something went wrong server"});
+        }
+        res.status(200).json({status: "success" , data: user});
+    } catch (error) {
+        res.status(400).json({status: "Failed" , error: error});
+    }
+}
 export const deleteAccount = async(req,res)=>{
     try{
         const {userId} = req;

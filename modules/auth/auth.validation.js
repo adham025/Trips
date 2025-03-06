@@ -22,27 +22,36 @@ export const signUpValidation = {
     }),
 };
 
-export const changePassValidation = {
-  body: Joi.object()
-    .required()
-    .keys({
-      currentPassword: Joi.string()
-        .pattern(
-          new RegExp("^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=/{}|?]).{6,}$")
-        )
-        .messages({
-          "string.pattern":
-            "password must include at least one uppercase, one digit, one special character and min length is 6",
-          "string.empty": "Password is required",
-        }),
-      newPassword: Joi.string()
-        .pattern(
-          new RegExp("^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=/{}|?]).{6,}$")
-        )
-        .messages({
-          "string.pattern":
-            "new password must include at least one uppercase, one digit, one special character and min length is 6",
-          "string.empty": "Password is required",
-        }),
-    }),
+export const changePassValidation = (req, res, next) => {
+  console.log("validation");
+  
+  const schema = Joi.object({
+    currentPassword: Joi.string()
+      .pattern(
+        new RegExp("^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=/{}|?]).{6,}$")
+      )
+      .required()
+      .messages({
+        "string.pattern.base":
+          "password must include at least one uppercase, one digit, one special character and min length is 6",
+        "string.empty": "Password is required",
+      }),
+    newPassword: Joi.string()
+      .pattern(
+        new RegExp("^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=/{}|?]).{6,}$")
+      )
+      .required()
+      .messages({
+        "string.pattern.base":
+          "new password must include at least one uppercase, one digit, one special character and min length is 6",
+        "string.empty": "Password is required",
+      }),
+  });
+  const { error } = schema.validate(req.body, { abortEarly: false });
+
+  if (error) {
+    return res.status(400).json({ errors: error.details.map(err => err.message.replaceAll(`\"` , "")) });
+  }
+
+  next(); 
 };
