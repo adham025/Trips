@@ -34,7 +34,7 @@ connection();
 
 //Setup API Routing
 app.use(`${baseUrl}/auth`, indexRouter.authRouter);
-app.use(`${baseUrl}/user`, indexRouter.profileRoutes);
+app.use(`${baseUrl}/profile`, indexRouter.profileRoutes);
 app.use(`${baseUrl}/user`, indexRouter.userRoutes);
 app.use(`${baseUrl}/review`, indexRouter.reviewRoutes);
 app.use(`${baseUrl}/trips`, indexRouter.tripRoutes);

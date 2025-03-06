@@ -8,10 +8,10 @@ import { asyncHandler } from "../../services/asyncHandler.js";
 
 const profileRoutes = Router();
 
-profileRoutes.put("/profile/account" , auth([roles.User]) , accountController)
-profileRoutes.get("/profile/account/data" , auth([roles.User]) , getUserDataInAccount)
-profileRoutes.patch("/profile/changePass" , changePassValidation , auth([roles.User]) , changePassword)
-profileRoutes.delete("/profile/deleteAccount" , auth() , deleteAccount);
+profileRoutes.put("/account" , auth([roles.User]) , accountController)
+profileRoutes.get("/data" , auth([roles.User]) , getUserDataInAccount)
+profileRoutes.patch("/changePass" , changePassValidation , auth([roles.User]) , changePassword)
+profileRoutes.delete("/deleteAccount" , auth([roles.User]) , deleteAccount);
 
 profileRoutes.post("/upload/profile",auth(), myMulter().single("avatar") ,asyncHandler( addProfileImage))
 export default profileRoutes;
