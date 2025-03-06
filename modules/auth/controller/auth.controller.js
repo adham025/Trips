@@ -35,7 +35,7 @@ export const signUp = async (req, res, next) => {
         name,
         email,
         password: hashedPassword,
-        phone
+        phone,
       });
 
       let token = jwt.sign(
@@ -54,7 +54,7 @@ export const signUp = async (req, res, next) => {
 
       if (result.accepted.length) {
         let savedUser = await addUser.save();
-        res.status(201).json({ message: "Success", savedUser });
+        res.status(201).json({ message: "Success" });
       } else {
         next(new Error("Invalid email", { cause: 404 }));
       }
@@ -67,7 +67,6 @@ export const signUp = async (req, res, next) => {
     });
   }
 };
-
 export const confirmEmail = async (req, res, next) => {
   try {
     let { token } = req.params;
@@ -99,7 +98,6 @@ export const confirmEmail = async (req, res, next) => {
     });
   }
 };
-
 export const logIn = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   const user = await findOne({
@@ -127,7 +125,7 @@ export const logIn = asyncHandler(async (req, res, next) => {
         await redis.set(`user-${user._id}`, JSON.stringify(user.toObject()));
         await redis.expire(`user-${user._id}`, 900);
 
-        res.status(200).json({ message: "Success", token, userId : user._id });
+        res.status(200).json({ message: "Success", token, userId: user._id });
       }
     } else {
       next(new Error("Password don't match", { cause: 400 }));
