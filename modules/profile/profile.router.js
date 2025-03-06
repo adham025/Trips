@@ -18,19 +18,6 @@ profileRoutes.put("/account" , auth([roles.User]) , accountController)
 profileRoutes.get("/data" , auth([roles.User]) , getUserDataInAccount)
 profileRoutes.patch("/changePass" , changePassValidation , auth([roles.User]) , changePassword)
 profileRoutes.delete("/deleteAccount" , auth([roles.User]) , deleteAccount);
-profileRoutes.put("/profile/account", auth([roles.User]), accountController);
-profileRoutes.get(
-  "/profile/account/data",
-  auth([roles.User]),
-  getUserDataInAccount
-);
-profileRoutes.patch(
-  "/profile/changePass",
-  changePassValidation,
-  auth([roles.User]),
-  changePassword
-);
-profileRoutes.delete("/profile/deleteAccount", auth(), deleteAccount);
 
 profileRoutes.post(
   "/profile/upload/profile",
