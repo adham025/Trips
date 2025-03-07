@@ -13,6 +13,12 @@ const tripSchema = new Schema(
       trim: true,
       maxLength: 500,
     },
+    startPoint: {
+      type: [String],
+      required: true,
+      trim: true,
+      index: true,
+    },
     destination: {
       type: String,
       required: true,
@@ -47,7 +53,6 @@ const tripSchema = new Schema(
     },
     availableSeats: {
       type: Number,
-      required: true,
       min: [0, "Available seats cannot be negative."],
     },
     createdBy: {
