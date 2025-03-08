@@ -14,10 +14,10 @@ import { asyncHandler } from "../../services/asyncHandler.js";
 
 const profileRoutes = Router();
 
-profileRoutes.put("/account" , auth([roles.User]) , accountController)
-profileRoutes.get("/data" , auth([roles.User]) , getUserDataInAccount)
+profileRoutes.put("/account" , auth([roles.User,roles.Admin]) , accountController)
+profileRoutes.get("/data" , auth([roles.User , roles.Admin]) , getUserDataInAccount)
 profileRoutes.patch("/changePass" , changePassValidation , auth([roles.User]) , changePassword)
-profileRoutes.delete("/deleteAccount" , auth([roles.User]) , deleteAccount);
+profileRoutes.delete("/deleteAccount" , auth([roles.User , roles.Admin]) , deleteAccount);
 
 profileRoutes.post(
   "/profile/upload/profile",
