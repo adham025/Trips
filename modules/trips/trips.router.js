@@ -23,11 +23,11 @@ tripRoutes.use("/wishlist", wishList);
 
 tripRoutes
   .route("/")
-  .get(auth(endPoints.all), getAllTrips)
+  .get(getAllTrips)
 
 tripRoutes
   .route("/:id")
-  .get(auth(endPoints.all), validation(getByIdSchema), getTripById)
+  .get(validation(getByIdSchema), getTripById)
   .patch(
     auth(endPoints.add),
     myMulter(fileValidation.image).array("images", 7),

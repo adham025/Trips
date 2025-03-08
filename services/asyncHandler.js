@@ -1,22 +1,22 @@
 export function asyncHandler(fn) {
   return (req, res, next) => {
     fn(req, res, next).catch((err) => {
-      // next(new Error(err.message, { cause: 500 }));
-      res.status(500).json({ message: err.message, status: err.stack });
+      err.statusCode = err.statusCode || 500; // Ensure a valid status code
+      next(err); // Pass error to the global error handler
     });
   };
 }
 
 export const globalError = (err, req, res, next) => {
-  if (err) {
-    if (process.env.ENV == "DEV") {
-      res
-        .status(err["cause"])
-        .json({ message: err.message, stack: err.stack, status: err["cause"] });
-    } else {
-      res
-        .status(err["cause"])
-        .json({ message: err.message, status: err["cause"] });
-    }
+  const statusCode = err.statusCode || 500; // Default to 500 if undefined
+
+  const response = {
+    message: err.message || "Internal Server Error",
+  };
+
+  if (process.env.ENV === "DEV") {
+    response.stack = err.stack; // Include stack trace in development mode
   }
+
+  res.status(statusCode).json(response);
 };

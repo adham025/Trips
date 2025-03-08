@@ -12,43 +12,75 @@ export const addTrip = asyncHandler(async (req, res, next) => {
     model: categoryModel,
     condition: { _id: id },
   });
+
   if (!foundedCategory) {
-    next(new Error("subCategory or category not found", { cause: 404 }));
-  } else {
-    if (!req.files?.length) {
-      next(new Error("You have to add images", { cause: 400 }));
-    } else {
-      req.body.categoryId = id;
-      req.body.slug = slugify(req.body.title);
-      req.body.createdBy = req.user._id;
+    return next(new Error("Category not found", { cause: 404 }));
+  }
 
-      let imagesUrl = [];
-      let imageIds = [];
-      for (const file of req.files) {
-        let { secure_url, public_id } = await cloudinary.uploader.upload(
-          file.path,
-          { folder: "2025/trips" }
-        );
-        imagesUrl.push(secure_url);
-        imageIds.push(public_id);
-      }
-      req.body.images = imagesUrl;
-      req.body.publicImageIds = imageIds;
+  if (!req.files?.length) {
+    return next(new Error("You have to add images", { cause: 400 }));
+  }
 
-      const trip = await tripModel.create(req.body);
-      const responseTrip = trip.toObject();
-      delete responseTrip.__v;
+  if (!Array.isArray(req.body.startPoint)) {
+    return next(new Error("You must provide start point", { cause: 400 }));
+  }
 
-      if (!trip) {
-        for (const id of imageIds) {
-          await cloudinary.uploader.destroy(id);
+  if (!req.body.destination) {
+    return next(new Error("Destination is required", { cause: 400 }));
+  }
+
+  let imagesUrl = [];
+  let imageIds = [];
+
+  for (const file of req.files) {
+    try {
+      let { secure_url, public_id } = await cloudinary.uploader.upload(
+        file.path,
+        {
+          folder: "2025/trips",
         }
-        next(new Error("Error while inserting to DB", { cause: 400 }));
-      } else {
-        res.status(201).json({ message: "Success", responseTrip });
-      }
+      );
+      imagesUrl.push(secure_url);
+      imageIds.push(public_id);
+    } catch (error) {
+      console.error("Cloudinary Upload Failed:", error);
+      return next(new Error("Error uploading images", { cause: 500 }));
     }
   }
+
+  const allowedFields = [
+    "title",
+    "description",
+    "price",
+    "departureDate",
+    "returnDate",
+  ];
+  const tripData = {};
+  allowedFields.forEach((field) => {
+    if (req.body[field]) tripData[field] = req.body[field];
+  });
+
+  tripData.categoryId = id;
+  tripData.slug = slugify(req.body.title);
+  tripData.createdBy = req.user._id;
+  tripData.images = imagesUrl;
+  tripData.publicImageIds = imageIds;
+  tripData.startPoint = req.body.startPoint;
+  tripData.destination = req.body.destination;
+
+  const trip = await tripModel.create(tripData);
+
+  if (!trip) {
+    for (const id of imageIds) {
+      await cloudinary.uploader.destroy(id);
+    }
+    return next(new Error("Error while inserting to DB", { cause: 400 }));
+  }
+
+  const responseTrip = trip.toObject();
+  delete responseTrip.__v;
+
+  res.status(201).json({ message: "Success", responseTrip });
 });
 
 export const getAllTrips = asyncHandler(async (req, res, next) => {
