@@ -21,8 +21,15 @@ export const addTrip = asyncHandler(async (req, res, next) => {
     return next(new Error("You have to add images", { cause: 400 }));
   }
 
-  if (!Array.isArray(req.body.startPoint)) {
+  if (!req.body.startPoint || req.body.startPoint.length === 0) {
+    console.log(req.body.startPoint);
+
     return next(new Error("You must provide start point", { cause: 400 }));
+  }
+
+  let startPoints = [];
+  for (let i = 0; i < req.body.startPoint.length; i++) {
+    startPoints.push(req.body.startPoint[i]);
   }
 
   if (!req.body.destination) {
@@ -54,6 +61,7 @@ export const addTrip = asyncHandler(async (req, res, next) => {
     "price",
     "departureDate",
     "returnDate",
+    "startPoint",
   ];
   const tripData = {};
   allowedFields.forEach((field) => {
@@ -84,8 +92,7 @@ export const addTrip = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllTrips = asyncHandler(async (req, res, next) => {
-  // let api = new ApiFeatures(tripModel.find(), req.query);
-  let allTrips = await tripModel.find().populate("categoryId","name");
+  let allTrips = await tripModel.find().populate("categoryId", "name");
   res.json({ message: "Success", allTrips });
 });
 

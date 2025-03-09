@@ -9,7 +9,7 @@ router.post(
   auth(endPoints.addCategory),
   categoryController.addCategory
 );
-router.get("/all", auth(endPoints.addCategory), categoryController.categories);
+router.get("/all", categoryController.categories);
 router.get(
   "/:categoryId",
   auth(endPoints.addCategory),
