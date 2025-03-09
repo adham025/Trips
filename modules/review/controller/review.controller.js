@@ -4,7 +4,7 @@ import tripModel from "../../../DB/model/trip.model.js";
 export const getReviews = async (req, res) => {
   try {
     const { tripId } = req.params;
-    const reviews = await reviewModel.find({ trip: tripId }).populate("user");
+    const reviews = await reviewModel.find({ trip: tripId }).populate("user", "name email");
     if (reviews.length === 0) {
       return res
         .status(404)
@@ -60,7 +60,7 @@ export const addReview = async (req, res) => {
     const populatedReview = await newReview.populate("user", "name email");
 
     res.status(201).json({
-      message: "Review updated successfully",
+      message: "Review added successfully",
       review: populatedReview,
     });
   } catch (error) {
