@@ -125,7 +125,7 @@ export const logIn = asyncHandler(async (req, res, next) => {
         await redis.set(`user-${user._id}`, JSON.stringify(user.toObject()));
         await redis.expire(`user-${user._id}`, 900);
 
-        res.status(200).json({ message: "Success", token, userId: user._id });
+        res.status(200).json({ message: "Success", token, userId: user._id, image: user.image || "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg" });
       }
     } else {
       next(new Error("Password don't match", { cause: 400 }));
