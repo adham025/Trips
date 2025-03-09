@@ -85,7 +85,7 @@ export const addTrip = asyncHandler(async (req, res, next) => {
 
 export const getAllTrips = asyncHandler(async (req, res, next) => {
   // let api = new ApiFeatures(tripModel.find(), req.query);
-  let allTrips = await tripModel.find();
+  let allTrips = await tripModel.find().populate("categoryId","name");
   res.json({ message: "Success", allTrips });
 });
 
