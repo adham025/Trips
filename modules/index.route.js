@@ -9,6 +9,7 @@ import tripRoutes from "./trips/trips.router.js";
 import bookingRoutes from "./booking/booking.route.js";
 import categoryRoutes from "./category/category.router.js";
 import paymentRoutes from "../payment/payment.routes.js";
+import searchRoutes from "./search/search.routes.js"
 
 export {
   authRouter,
@@ -21,5 +22,6 @@ export {
   tripRoutes,
   paymentRoutes,
   bookingRoutes,
-  categoryRoutes
+  categoryRoutes,
+  searchRoutes
 };

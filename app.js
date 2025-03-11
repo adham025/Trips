@@ -40,11 +40,12 @@ app.use(`${baseUrl}/review`, indexRouter.reviewRoutes);
 app.use(`${baseUrl}/trips`, indexRouter.tripRoutes);
 app.use(`${baseUrl}/booking`, indexRouter.bookingRoutes);
 app.use(`${baseUrl}/category`, indexRouter.categoryRoutes);
+app.use(`${baseUrl}/payment`, indexRouter.paymentRoutes);
+app.use(`${baseUrl}/search`, indexRouter.searchRoutes);
 
 // Socket.io
 app.use(`${baseUrl}/conversations`, indexRouter.conversationRoutes);
 app.use(`${baseUrl}/messages`, indexRouter.messageRoutes);
-app.use(`${baseUrl}/payment`, indexRouter.paymentRoutes);
 
 initSocket(server);
 
