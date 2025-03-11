@@ -21,8 +21,15 @@ export const addTrip = asyncHandler(async (req, res, next) => {
     return next(new Error("You have to add images", { cause: 400 }));
   }
 
-  if (!Array.isArray(req.body.startPoint)) {
+  if (!req.body.startPoint || req.body.startPoint.length === 0) {
+    console.log(req.body.startPoint);
+
     return next(new Error("You must provide start point", { cause: 400 }));
+  }
+
+  let startPoints = [];
+  for (let i = 0; i < req.body.startPoint.length; i++) {
+    startPoints.push(req.body.startPoint[i]);
   }
 
   if (!req.body.destination) {
@@ -54,6 +61,8 @@ export const addTrip = asyncHandler(async (req, res, next) => {
     "price",
     "departureDate",
     "returnDate",
+    "startPoint",
+    "availableSeats",
   ];
   const tripData = {};
   allowedFields.forEach((field) => {
@@ -67,6 +76,7 @@ export const addTrip = asyncHandler(async (req, res, next) => {
   tripData.publicImageIds = imageIds;
   tripData.startPoint = req.body.startPoint;
   tripData.destination = req.body.destination;
+  tripData.availableSeats = req.body.availableSeats;
 
   const trip = await tripModel.create(tripData);
 
@@ -84,11 +94,9 @@ export const addTrip = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllTrips = asyncHandler(async (req, res, next) => {
-  // let api = new ApiFeatures(tripModel.find(), req.query);
-  let allTrips = await tripModel.find().populate("categoryId","name");
+  let allTrips = await tripModel.find().populate("categoryId", "name");
   res.json({ message: "Success", allTrips });
 });
-
 export const getTripById = asyncHandler(async (req, res, next) => {
   try {
     const trip = await tripModel.findById(req.params.id);
@@ -105,7 +113,6 @@ export const getTripById = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
-
 export const updateTrip = asyncHandler(async (req, res, next) => {
   const trip = await tripModel.findById(req.params.id);
 
@@ -115,6 +122,7 @@ export const updateTrip = asyncHandler(async (req, res, next) => {
 
   const newImages = [];
   const imagesToDelete = [];
+  const existingImages = req.body.existingImages ? JSON.parse(req.body.existingImages) : []; 
 
   try {
     if (req.files?.length) {
@@ -130,8 +138,9 @@ export const updateTrip = asyncHandler(async (req, res, next) => {
     }
 
     if (req.body.deletedImageIds?.length) {
+      const deletedIds = JSON.parse(req.body.deletedImageIds);
       const validDeletedIds = trip.publicImageIds.filter((id) =>
-        req.body.deletedImageIds.includes(id)
+        deletedIds.includes(id)
       );
 
       validDeletedIds.forEach((id) => {
@@ -148,6 +157,8 @@ export const updateTrip = asyncHandler(async (req, res, next) => {
       req.body.slug = slugify(req.body.title);
     }
     Object.assign(trip, req.body);
+
+    trip.images = existingImages.concat(trip.images.filter(image => !existingImages.includes(image)));
 
     const updatedTrip = await trip.save();
     const responseTrip = updatedTrip.toObject();

@@ -4,10 +4,12 @@ import tripModel from "../../../DB/model/trip.model.js";
 export const getReviews = async (req, res) => {
   try {
     const { tripId } = req.params;
-    const reviews = await reviewModel.find({ trip: tripId }).populate("user");
+    const reviews = await reviewModel.find({ trip: tripId }).populate("user", "name email");
     if (reviews.length === 0) {
-      return res.status(404).json({ message: "No reviews found for this trip" });
-    }    
+      return res
+        .status(404)
+        .json({ message: "No reviews found for this trip" });
+    }
     res.json(reviews);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -49,14 +51,18 @@ export const addReview = async (req, res) => {
     });
 
     console.log(newReview);
-    
 
     await newReview.save();
 
     trip.reviews.push(newReview._id);
     await trip.save();
 
-    res.status(201).json(newReview);
+    const populatedReview = await newReview.populate("user", "name email");
+
+    res.status(201).json({
+      message: "Review added successfully",
+      review: populatedReview,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

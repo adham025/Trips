@@ -39,7 +39,7 @@ tripRoutes
   .post(
     auth(endPoints.add),
     validation(addTripSchema),
-    myMulter(fileValidation.image).array("images", 7),
+    myMulter(fileValidation.image).array("images", 4),
     HME,
     addTrip
   );
