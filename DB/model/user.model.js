@@ -30,7 +30,7 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    image: String,
+    image: {type:String , default : "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg" },
     lastSeen: { type: Date, default: Date.now },
     wishlist: [
       {
