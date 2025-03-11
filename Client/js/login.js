@@ -1,5 +1,5 @@
 // API base URL for RESTful endpoints (adjust as needed)
-const baseUrl = "http://localhost:5000/api/v1";
+const baseUrl = "http://localhost:3000/api/v1";
 let token = localStorage.getItem("token") || null;
 
 

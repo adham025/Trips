@@ -132,6 +132,7 @@ export const logIn = asyncHandler(async (req, res, next) => {
             token,
             userId: user._id,
             userRole: user.role,
+            image: user.image || "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
           });
       }
     } else {
