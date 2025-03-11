@@ -62,6 +62,7 @@ export const addTrip = asyncHandler(async (req, res, next) => {
     "departureDate",
     "returnDate",
     "startPoint",
+    "availableSeats",
   ];
   const tripData = {};
   allowedFields.forEach((field) => {
@@ -75,6 +76,7 @@ export const addTrip = asyncHandler(async (req, res, next) => {
   tripData.publicImageIds = imageIds;
   tripData.startPoint = req.body.startPoint;
   tripData.destination = req.body.destination;
+  tripData.availableSeats = req.body.availableSeats;
 
   const trip = await tripModel.create(tripData);
 
@@ -95,7 +97,6 @@ export const getAllTrips = asyncHandler(async (req, res, next) => {
   let allTrips = await tripModel.find().populate("categoryId", "name");
   res.json({ message: "Success", allTrips });
 });
-
 export const getTripById = asyncHandler(async (req, res, next) => {
   try {
     const trip = await tripModel.findById(req.params.id);
@@ -112,7 +113,6 @@ export const getTripById = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
-
 export const updateTrip = asyncHandler(async (req, res, next) => {
   const trip = await tripModel.findById(req.params.id);
 
@@ -122,6 +122,7 @@ export const updateTrip = asyncHandler(async (req, res, next) => {
 
   const newImages = [];
   const imagesToDelete = [];
+  const existingImages = req.body.existingImages ? JSON.parse(req.body.existingImages) : []; 
 
   try {
     if (req.files?.length) {
@@ -137,8 +138,9 @@ export const updateTrip = asyncHandler(async (req, res, next) => {
     }
 
     if (req.body.deletedImageIds?.length) {
+      const deletedIds = JSON.parse(req.body.deletedImageIds);
       const validDeletedIds = trip.publicImageIds.filter((id) =>
-        req.body.deletedImageIds.includes(id)
+        deletedIds.includes(id)
       );
 
       validDeletedIds.forEach((id) => {
@@ -155,6 +157,8 @@ export const updateTrip = asyncHandler(async (req, res, next) => {
       req.body.slug = slugify(req.body.title);
     }
     Object.assign(trip, req.body);
+
+    trip.images = existingImages.concat(trip.images.filter(image => !existingImages.includes(image)));
 
     const updatedTrip = await trip.save();
     const responseTrip = updatedTrip.toObject();
