@@ -9,6 +9,7 @@ router.post(
   auth(endPoints.addCategory),
   categoryController.addCategory
 );
+router.delete("/:id", auth(endPoints.addCategory), categoryController.deleteCategory);
 router.get("/all", categoryController.categories);
 router.get(
   "/:categoryId",

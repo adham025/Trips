@@ -49,3 +49,20 @@ export const getCategoryById = asyncHandler(async (req, res, next) => {
     res.status(200).json({ message: " Done", category });
   }
 });
+
+export const deleteCategory = asyncHandler(async (req, res, next) => {
+  try {
+    const category = await categoryModel.findByIdAndDelete(req.params.id);
+
+    if (!category) {
+      const error = new Error("Category not found");
+      error.cause = 404;
+      throw error;
+    }
+
+    res.status(200).json({ message: "Success" });
+  } catch (error) {
+    if (!error.cause) error.cause = 500;
+    next(error);
+  }
+});
